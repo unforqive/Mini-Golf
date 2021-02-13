@@ -7,7 +7,7 @@ Thanks for checking out this project!
 
 Current status at a glance:
 
-<pre>Unity version: 2020.1.3f1
+<pre>Unity Version: 2020.1.3f1
 Platform     : Windows
 Current State: Alpha
 </pre>
