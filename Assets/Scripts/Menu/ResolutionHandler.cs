@@ -29,10 +29,11 @@ public class ResolutionHandler : MonoBehaviour
             }
         }
 
-        resolutionDropdown.AddOptions(options);
+        resolutionDropdown.AddOptions(options); 
 
         resolutionDropdown.value = currentResolutionIndex;
-        resolutionDropdown.RefreshShownValue();
+
+        resolutionDropdown.RefreshShownValue(); 
     }
 
     public void SetResolution(int resolutionIndex)

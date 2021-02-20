@@ -21,31 +21,80 @@ public class PostProcessing : MonoBehaviour
 
     public float floatValue;
 
+    [Header("Loaded Data")]
+    public bool postProcessingOn;
+    public bool ambientOccOn;
+    public bool vignetteOn;
+    public bool dofOn;
+
     public void Awake()
     {
-        PostProcessingActive.postProcessingActive = (PlayerPrefs.GetInt("Post Processing Value") != 0);
+        postProcessingOn = PostProcessingActive.postProcessingActive = (PlayerPrefs.GetInt("Post Processing Value") != 0);
+
+        ambientOccOn = (PlayerPrefs.GetInt("Ambient Occlusion Value") != 0);
+        vignetteOn = (PlayerPrefs.GetInt("Vignette Value") != 0);
+        dofOn = (PlayerPrefs.GetInt("Depth of Field Value") != 0);
     }
+
     private void Start()
     {
         volume.profile.TryGetSettings(out ambientOcc);
         volume.profile.TryGetSettings(out vignette);
         volume.profile.TryGetSettings(out dof);
 
-        ambientOcc.active = false;
-        vignette.active = false;
-        dof.active = false;
-
         if (PostProcessingActive.postProcessingActive)
         {
             EnablePostProcessing(true);
+
+            if (ambientOccOn)
+            {
+                ambientOcc.active = true;
+                ambientText.text = "ON";
+            }
+
+            if (!ambientOccOn)
+            {
+                ambientOcc.active = false;
+                ambientText.text = "OFF";
+            }
+
+            if (vignetteOn)
+            {
+                vignette.active = true;
+                vignetteText.text = "ON";
+            }
+
+            if (!vignetteOn)
+            {
+                vignette.active = false;
+                vignetteText.text = "OFF";
+            }
+
+            if (dofOn)
+            {
+                dof.active = true;
+                dofText.text = "ON";
+            }
+
+            if (!dofOn)
+            {
+                dof.active = false;
+                dofText.text = "OFF";
+            }
         }
         else
         {
-            return;
+            ambientOcc.active = false;
+            vignette.active = false;
+            dof.active = false;
+
+            ambientText.text = "OFF";
+            vignetteText.text = "OFF";
+            dofText.text = "OFF";
         }
     }
 
-    public void EnablePostProcessing (bool value)
+    public void EnablePostProcessing(bool value)
     {
         if (value)
         {
@@ -55,9 +104,35 @@ public class PostProcessing : MonoBehaviour
 
             postText.text = "ON";
 
-            ambientText.text = "ON";
-            vignetteText.text = "ON";
-            dofText.text = "ON";
+            if (ambientOcc.active)
+            {
+                ambientText.text = "ON";
+            }
+
+            if (!ambientOcc.active)
+            {
+                ambientText.text = "OFF";
+            }
+
+            if (vignette.active)
+            {
+                vignetteText.text = "ON";
+            }
+
+            if (!vignette.active)
+            {
+                vignetteText.text = "OFF";
+            }
+
+            if (dof.active)
+            {
+                dofText.text = "ON";
+            }
+
+            if (!dof.active)
+            {
+                dofText.text = "OFF";
+            }
 
             PostProcessingActive.postProcessingActive = true;
         }
@@ -78,7 +153,7 @@ public class PostProcessing : MonoBehaviour
         }
     }
 
-    public void EnableAmbientOcclusion (bool value)
+    public void EnableAmbientOcclusion(bool value)
     {
         if (PostProcessingActive.postProcessingActive)
         {
@@ -106,7 +181,7 @@ public class PostProcessing : MonoBehaviour
     public void EnableVignette(bool value)
     {
         if (PostProcessingActive.postProcessingActive)
-        {
+        { 
             if (value)
             {
                 vignette.active = true;
@@ -125,7 +200,7 @@ public class PostProcessing : MonoBehaviour
         else
         {
             return;
-        } 
+        }
     }
 
     public void EnableDepthOfField(bool value)
@@ -156,5 +231,9 @@ public class PostProcessing : MonoBehaviour
     public void SetPostProcessing()
     {
         PlayerPrefs.SetInt("Post Processing Value", PostProcessingActive.postProcessingActive ? 1 : 0);
+
+        PlayerPrefs.SetInt("Ambient Occlusion Value", ambientOcc.active ? 1 : 0);
+        PlayerPrefs.SetInt("Vignette Value", vignette.active ? 1 : 0);
+        PlayerPrefs.SetInt("Depth of Field Value", dof.active ? 1 : 0);
     }
 }

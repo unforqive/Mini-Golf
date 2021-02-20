@@ -11,10 +11,12 @@ public class MenuController : MonoBehaviour
     public GameObject SkinsMenu;
     public GameObject ShopMenu;
     public GameObject GiftsMenu;
+    public GameObject SplashScreen;
 
     public static string menu;
     public static string nextMenu;
 
+    public Animator splashScreenButtonAnimation;
     public Animator StartScreenButtonsAnimation;
     public Animator SettingsMenuAnimation;
     public Animator PlayMenuAnimation;
@@ -34,6 +36,8 @@ public class MenuController : MonoBehaviour
 
     public TMP_Dropdown qualityDropDown;
 
+    public GameHandler gameHandler;
+
     #endregion
 
     #region Private Variables
@@ -52,7 +56,7 @@ public class MenuController : MonoBehaviour
 
     void Start()
     {
-        menu = "Start Screen";
+        menu = "Splash Screen";
 
         startScreenAnimationTimer = false;
         MenuAnimationTimer = 0;
@@ -103,8 +107,20 @@ public class MenuController : MonoBehaviour
             MenuAnimationTimer = 0;
         }
 
+        if (menu == "Splash Screen")
+        {
+            SplashScreen.SetActive(true);
+            StartScreen.SetActive(false);
+            SettingsMenu.SetActive(false);
+            PlayMenu.SetActive(false);
+            SkinsMenu.SetActive(false);
+            ShopMenu.SetActive(false);
+            GiftsMenu.SetActive(false);
+        }
+
         if (menu == "Start Screen")
         {
+            SplashScreen.SetActive(false);
             StartScreen.SetActive(true);
             SettingsMenu.SetActive(false);
             PlayMenu.SetActive(false);
@@ -115,6 +131,7 @@ public class MenuController : MonoBehaviour
 
         if (menu == "Start Screen" && returnToMenu)
         {
+            SplashScreen.SetActive(false);
             StartScreen.SetActive(true);
             SettingsMenu.SetActive(false);
             PlayMenu.SetActive(false);
@@ -130,6 +147,7 @@ public class MenuController : MonoBehaviour
 
         if (menu == "Play Screen")
         {
+            SplashScreen.SetActive(false);
             StartScreen.SetActive(false);
             SettingsMenu.SetActive(false);
             PlayMenu.SetActive(true);
@@ -140,6 +158,7 @@ public class MenuController : MonoBehaviour
 
         if (menu == "Settings Screen")
         {
+            SplashScreen.SetActive(false);
             StartScreen.SetActive(false);
             SettingsMenu.SetActive(true);
             PlayMenu.SetActive(false);
@@ -150,6 +169,7 @@ public class MenuController : MonoBehaviour
 
         if (menu == "Shop Screen")
         {
+            SplashScreen.SetActive(false);
             StartScreen.SetActive(false);
             SettingsMenu.SetActive(false);
             PlayMenu.SetActive(false);
@@ -160,6 +180,7 @@ public class MenuController : MonoBehaviour
 
         if (menu == "Skins Screen")
         {
+            SplashScreen.SetActive(false);
             StartScreen.SetActive(false);
             SettingsMenu.SetActive(false);
             PlayMenu.SetActive(false);
@@ -170,6 +191,7 @@ public class MenuController : MonoBehaviour
 
         if (menu == "Gifts Screen")
         {
+            SplashScreen.SetActive(false);
             StartScreen.SetActive(false);
             SettingsMenu.SetActive(false);
             PlayMenu.SetActive(false);
@@ -180,6 +202,15 @@ public class MenuController : MonoBehaviour
     }
 
     #region Menu Buttons
+
+    public void BeginningScreen()
+    {
+        startScreenAnimationTimer = true;
+
+        nextMenu = "Start Menu";
+
+        splashScreenButtonAnimation.SetBool("CameraDown", true);
+    }
 
     public void Play()
     {
@@ -319,5 +350,16 @@ public class MenuController : MonoBehaviour
         PlayerPrefs.SetInt("Quality", quality);
 
         Debug.Log("Player Preferences Saved.");
+    }
+
+    public void LaunchGame()
+    {
+        if (menu == "Play Screen")
+        {
+            PlayMenuAnimation.SetBool("Play Appear", false);
+            PlayMenuAnimation.SetBool("Play Disappear", true);
+
+            gameHandler.EnablePlayerCamera();
+        }
     }
 }
