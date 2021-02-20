@@ -7,6 +7,7 @@ public class EnterNameAnimation : MonoBehaviour
     public GameObject enterButton;
     public GameObject displayName;
     public Animator enterNameAnimation;
+    public Animator splashScreenAnimation;
 
     public MenuController menuController;
     public LoadName loadName;
@@ -46,6 +47,11 @@ public class EnterNameAnimation : MonoBehaviour
         if (loggingInTimer == 400)
         {
             displayName.SetActive(false);
+            splashScreenAnimation.SetBool("Splash Screen Exit", true);
+        }
+
+        if (loggingInTimer == 500)
+        {
             menuController.BeginningScreen();
             loadName.displayName.SetActive(true);
             loadName.DisplayName();

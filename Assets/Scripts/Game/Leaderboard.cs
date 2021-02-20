@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class Leaderboard : MonoBehaviour
 {
     public Transform entryContainer;
@@ -10,33 +9,66 @@ public class Leaderboard : MonoBehaviour
 
     public GameObject leaderboard;
 
+    public GameObject clones;
+
+    public Animator leaderboardAnimation;
+
     public int amountOfBots;
     public int amountOfPlayers;
+
+    public int animationTimer;
+    public bool startAnimationTimer;
 
     private bool canPressTab;
 
     void Start()
     {
-        leaderboard.gameObject.SetActive(false);
+        leaderboard.SetActive(false);
         amountOfBots = 1;
         amountOfPlayers = 2;
         canPressTab = false;
+
+        animationTimer = 0;
     }
 
     void Update()
     {
+        if (startAnimationTimer)
+        {
+            animationTimer += 1;
+        }
+
+        if (animationTimer > 55)
+        {
+            clones.SetActive(true);
+
+            startAnimationTimer = false;
+            animationTimer = 0;
+        }
+
         if(canPressTab)
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                ShowLeaderboard();
-                Debug.Log("show leader");
+                startAnimationTimer = true;
+                entryTemplate.gameObject.SetActive(true);
+
+                leaderboard.SetActive(true);
+
+                leaderboardAnimation.SetBool("In", true);
+                leaderboardAnimation.SetBool("Out", false);
             }
 
             if (Input.GetKeyUp(KeyCode.Tab))
             {
-                HideLeaderboard();
-                Debug.Log("hide leader");
+                startAnimationTimer = false;
+                animationTimer = 0;
+
+                clones.SetActive(false);
+                entryTemplate.gameObject.SetActive(true);
+
+                leaderboardAnimation.SetBool("In", false);
+                leaderboardAnimation.SetBool("Out", true);
             }
         } 
     }
@@ -52,6 +84,9 @@ public class Leaderboard : MonoBehaviour
         for (int i = 0; i < amountOfPlayers; i++)
         {
             Transform entryTransform = Instantiate(entryTemplate, entryContainer);
+            entryTransform.SetParent(clones.transform);
+            clones.SetActive(false);
+
             RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
             entryRectTransform.anchoredPosition = new Vector2(0, -templateHeight * i);
             entryTransform.gameObject.SetActive(true);
@@ -89,6 +124,6 @@ public class Leaderboard : MonoBehaviour
 
     public void HideLeaderboard()
     {
-        leaderboard.gameObject.SetActive(false);
+        leaderboard.SetActive(false);
     }
 }
