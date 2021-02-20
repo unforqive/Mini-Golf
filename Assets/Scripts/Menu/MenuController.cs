@@ -356,8 +356,7 @@ public class MenuController : MonoBehaviour
     {
         if (menu == "Play Screen")
         {
-            PlayMenuAnimation.SetBool("Play Appear", false);
-            PlayMenuAnimation.SetBool("Play Disappear", true);
+            CloseMenu();
 
             gameHandler.EnablePlayerCamera();
         }
