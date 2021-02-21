@@ -38,6 +38,8 @@ public class MenuController : MonoBehaviour
 
     public GameHandler gameHandler;
 
+    public bool inGame;
+
     #endregion
 
     #region Private Variables
@@ -62,6 +64,8 @@ public class MenuController : MonoBehaviour
         MenuAnimationTimer = 0;
 
         returnToMenu = false;
+
+        inGame = false;
     }
 
     void Update()
@@ -359,6 +363,7 @@ public class MenuController : MonoBehaviour
             CloseMenu();
 
             gameHandler.EnablePlayerCamera();
+            inGame = true;
         }
     }
 }

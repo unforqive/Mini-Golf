@@ -9,6 +9,8 @@ public class Leaderboard : MonoBehaviour
 
     public GameObject leaderboard;
 
+    public MenuController menuController;
+
     public GameObject clones;
 
     public Animator leaderboardAnimation;
@@ -48,7 +50,7 @@ public class Leaderboard : MonoBehaviour
 
         if(canPressTab)
         {
-            if (Input.GetKeyDown(KeyCode.Tab))
+            if (Input.GetKeyDown(KeyCode.Tab) && menuController.inGame)
             {
                 startAnimationTimer = true;
                 entryTemplate.gameObject.SetActive(true);

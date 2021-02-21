@@ -32,6 +32,7 @@ public class GameHandler : MonoBehaviour
             menuController.returnToMenu = true;
 
             cursorLock.showCursor();
+            menuController.inGame = false;
         }
     }
 
