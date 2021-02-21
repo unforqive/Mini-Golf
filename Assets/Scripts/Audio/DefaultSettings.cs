@@ -27,7 +27,7 @@ public class DefaultSettings : MonoBehaviour
         fov = 50;
         fovSlider.value = fov;
 
-        postProcess.EnablePostProcessing(true);
+        postProcess.EnablePostProcessing(false);
 
         gameQuality = 0;
 

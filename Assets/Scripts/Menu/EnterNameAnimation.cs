@@ -11,6 +11,8 @@ public class EnterNameAnimation : MonoBehaviour
 
     public MenuController menuController;
     public LoadName loadName;
+    public EnterName enterName;
+    public DefaultSettings defaultSettings;
 
     private int animationTimer;
     private bool startAnimationTimer;
@@ -18,16 +20,48 @@ public class EnterNameAnimation : MonoBehaviour
     private int loggingInTimer;
     private bool startLoggingInTimer;
 
+    private int waitTimer;
+    private bool startWaitTimer;
+
     void Start()
     {
         displayName.SetActive(false);
         animationTimer = 0;
 
         loggingInTimer = 0;
+
+        waitTimer = 0;
+
+        if (enterName.hasEnteredUserName)
+        {
+            displayName.SetActive(true);
+            enterName.LoadName();
+            startWaitTimer = true;
+        }
+
+        //if first time playing
+        if (!enterName.hasEnteredUserName)
+        {
+            enterNameAnimation.SetBool("Name Disappear", false);
+            enterNameAnimation.SetBool("Name Appear", true);
+
+            defaultSettings.Default();
+        }
     }
 
     void Update()
     {
+        if (startWaitTimer)
+        {
+            waitTimer += 1;
+        }
+
+        if (waitTimer == 1)
+        {
+            startLoggingInTimer = true;
+            startWaitTimer = false;
+        }
+
         if (startAnimationTimer)
         {
             animationTimer += 1;
@@ -50,7 +84,7 @@ public class EnterNameAnimation : MonoBehaviour
             splashScreenAnimation.SetBool("Splash Screen Exit", true);
         }
 
-        if (loggingInTimer == 500)
+        if (loggingInTimer == 430)
         {
             menuController.BeginningScreen();
             loadName.displayName.SetActive(true);
@@ -61,6 +95,7 @@ public class EnterNameAnimation : MonoBehaviour
     public void EnterButton ()
     {
         enterNameAnimation.SetBool("Name Disappear", true);
+        enterNameAnimation.SetBool("Name Appear", false);
         startAnimationTimer = true;
         startLoggingInTimer = true;
     }
