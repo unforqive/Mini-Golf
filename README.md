@@ -1,5 +1,5 @@
 
-# Mini-Golf (ALPHA)
+# Golf With Bots (ALPHA)
 
 Thanks for checking out this project!
 
