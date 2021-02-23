@@ -1,14 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     public Transform cameraParent;
     public float speed = 5f;
+    public float rotateSpeed = 15f;
     public float moveSpeed = 0.25f;
 
+    public DragPower dragPower;
+
     public Transform player;
+    public GameObject Line;
+
+    private Quaternion up;
 
     private Quaternion camRotation;
     private float lookUpMin = -50;
@@ -25,6 +33,14 @@ public class CameraController : MonoBehaviour
 
     public float cameraSmoothFactor = 1;
 
+    public bool cancelShot;
+
+    void Start()
+    {
+        cancelShot = false;
+        Line.SetActive(false);
+    }
+
     void Update()
     {
         if (Input.GetMouseButton(1))
@@ -35,6 +51,25 @@ public class CameraController : MonoBehaviour
             camRotation.x = Mathf.Clamp(camRotation.x, lookUpMin, lookUpMax);
 
             cameraParent.localRotation = Quaternion.Euler(camRotation.x, camRotation.y, 0);
+
+            Line.SetActive(true);
+
+            Line.transform.rotation = Quaternion.Euler(0, (camRotation.y - 180), 0);
+        }
+
+        if (dragPower.isMoving)
+        {
+            Line.SetActive(false);
+        }
+
+        if (!dragPower.isMoving)
+        {
+            Line.SetActive(true);
+        }
+
+        if (Input.GetMouseButtonDown(1) && dragPower.preparingToShoot)
+        {
+            cancelShot = true;
         }
 
         Vector3 p_Velocity = new Vector3();

@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 public class MenuController : MonoBehaviour
 {
@@ -39,6 +40,8 @@ public class MenuController : MonoBehaviour
     public GameHandler gameHandler;
 
     public bool inGame;
+
+    public Slider powerBar;
 
     #endregion
 
@@ -364,6 +367,7 @@ public class MenuController : MonoBehaviour
 
             gameHandler.EnablePlayerCamera();
             inGame = true;
+            powerBar.gameObject.transform.parent.gameObject.SetActive(false);
         }
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameHandler : MonoBehaviour
 {
     public GameObject menuCamera;
+    public GameObject Player;
 
     public GameObject playerCamera;
     public GameObject spectatorCamera;
@@ -13,10 +14,9 @@ public class GameHandler : MonoBehaviour
     public MenuController menuController;
 
     public CursorLock cursorLock;
+
     void Start()
     {
-        menuCamera.SetActive(true);
-        playerCamera.SetActive(false);
         spectatorCamera.SetActive(false);
     }
 
@@ -38,10 +38,9 @@ public class GameHandler : MonoBehaviour
 
     public void EnablePlayerCamera()
     {
+        Player.SetActive(true);
         menuCamera.SetActive(false);
-        playerCamera.SetActive(true);
-        spectatorCamera.SetActive(false);
-        cursorLock.hideCursor();
+        spectatorCamera.SetActive(false);   
     }
 
     public void EnableSpectatorCamera()

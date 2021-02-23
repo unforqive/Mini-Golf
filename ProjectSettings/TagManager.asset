@@ -3,7 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Hole 1
+  - Hole 2
+  - Hole 3
+  - Hole 4
+  - Hole 5
+  - Hole 6
+  - Hole 7
+  - Hole 8
+  - Hole9
+  - OutOfBounds
   layers:
   - Default
   - TransparentFX
