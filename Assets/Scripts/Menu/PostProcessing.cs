@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using TMPro;
-using JetBrains.Annotations;
-
 public class PostProcessing : MonoBehaviour
 {
     public PostProcessVolume volume;
@@ -186,7 +184,7 @@ public class PostProcessing : MonoBehaviour
     public void EnableVignette(bool value)
     {
         if (PostProcessingActive.postProcessingActive)
-        { 
+        {
             if (value)
             {
                 vignette.active = true;

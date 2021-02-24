@@ -31,8 +31,8 @@ TagManager:
   - Ball
   - Water
   - UI
-  - 
-  - 
+  - CameraIgnore
+  - Camera
   - 
   - 
   - 

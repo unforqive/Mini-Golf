@@ -48,8 +48,12 @@ public class DragPower : MonoBehaviour
 
     public GameObject cancel;
 
+    public ParHandler par;
+
     void Start()
     {
+        lastPosition = par.hole1Spawn.transform.position;
+
         preparingToShoot = false;
         powerBar.gameObject.transform.parent.gameObject.SetActive(false);
         canRotate = true;

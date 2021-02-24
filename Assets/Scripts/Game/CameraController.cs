@@ -43,25 +43,36 @@ public class CameraController : MonoBehaviour
         Line.SetActive(false);
     }
 
+    void FixedUpdate()
+    {
+        if (!dragPower.canRotate)
+        {
+            cameraParent.LookAt(new Vector3(dragPower.ball.transform.position.x, cameraParent.transform.position.y, dragPower.ball.position.z));
+        }
+    }
+
     void Update()
     {
         overHeadUI.rotation = Quaternion.Euler(camRotation.x, camRotation.y, 0);
         overHeadUI.position = new Vector3(dragPower.ball.position.x, dragPower.ball.position.y + 0.5f, dragPower.ball.position.z);
 
-        if (Input.GetMouseButton(1))
+        if (dragPower.canRotate)
         {
-            camRotation.x += speed * Input.GetAxis("Mouse Y") * cameraSmoothFactor * (-1);
-            camRotation.y += speed * Input.GetAxis("Mouse X") * cameraSmoothFactor;
+            if (Input.GetMouseButton(1))
+            {
+                camRotation.x += speed * Input.GetAxis("Mouse Y") * cameraSmoothFactor * (-1);
+                camRotation.y += speed * Input.GetAxis("Mouse X") * cameraSmoothFactor;
 
-            camRotation.x = Mathf.Clamp(camRotation.x, lookUpMin, lookUpMax);
+                camRotation.x = Mathf.Clamp(camRotation.x, lookUpMin, lookUpMax);
 
-            cameraParent.localRotation = Quaternion.Euler(camRotation.x, camRotation.y, 0);
+                cameraParent.localRotation = Quaternion.Euler(camRotation.x, camRotation.y, 0);
 
-            Line.SetActive(true);
+                Line.SetActive(true);
 
-            Line.transform.rotation = Quaternion.Euler(0, (camRotation.y - 180), 0);
+                Line.transform.rotation = Quaternion.Euler(0, (camRotation.y - 180), 0);
+            }
         }
-
+       
         if (dragPower.isMoving)
         {
             Line.SetActive(false);
@@ -77,25 +88,28 @@ public class CameraController : MonoBehaviour
             cancelShot = true;
         }
 
-        Vector3 p_Velocity = new Vector3();
-        if (Input.GetKey(KeyCode.W))
+        if (dragPower.canRotate)
         {
-            p_Velocity += new Vector3(0, 0, 1);
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            p_Velocity += new Vector3(0, 0, -1);
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            p_Velocity += new Vector3(-1, 0, 0);
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            p_Velocity += new Vector3(1, 0, 0);
-        }
+            Vector3 p_Velocity = new Vector3();
+            if (Input.GetKey(KeyCode.W))
+            {
+                p_Velocity += new Vector3(0, 0, 1);
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                p_Velocity += new Vector3(0, 0, -1);
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                p_Velocity += new Vector3(-1, 0, 0);
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                p_Velocity += new Vector3(1, 0, 0);
+            }
 
-        cameraParent.Translate(p_Velocity * moveSpeed, Space.Self);
+            cameraParent.Translate(p_Velocity * moveSpeed, Space.Self);
+        }
 
         float minX = player.position.x - newMinX;
         float maxX = player.position.x - newMaxX;
