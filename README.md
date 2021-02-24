@@ -16,7 +16,7 @@ Current State: Alpha
 
 To run the project in the Unity player, find the file labelled ***Mini Golf Build.zip***. Then press download.
 Once your download is finished, extract the ***Mini Golf Build*** Folder anywhere on your computer.
-Go inside the newly extracted folder and double click on ***Mini Golf.exe*** to open it.
+Go inside the newly extracted folder and double click on ***Mini Golf.exe*** to open and run it.
 
 ## Getting the project:
 
@@ -28,3 +28,6 @@ Downloading a zip file using the green button Github will not work. You must clo
 ## Getting the right version of Unity:
 
 Once you have cloned the repository, you should install the version of Unity that is listed above in the prerequisites section. Make sure you include windows standalone support in your installiation.
+
+## For enquiries and/or feedback:
+Head to http://discord.gg/ChZFtPxksP.
