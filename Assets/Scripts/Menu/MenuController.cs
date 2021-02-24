@@ -43,6 +43,9 @@ public class MenuController : MonoBehaviour
 
     public Slider powerBar;
 
+    public DragPower dragPower;
+    public GameObject parContainer;
+
     #endregion
 
     #region Private Variables
@@ -69,6 +72,7 @@ public class MenuController : MonoBehaviour
         returnToMenu = false;
 
         inGame = false;
+        parContainer.SetActive(false);
     }
 
     void Update()
@@ -148,6 +152,9 @@ public class MenuController : MonoBehaviour
 
             StartScreenButtonsAnimation.SetBool("Start Appear", true);
             StartScreenButtonsAnimation.SetBool("Start Disappear", false);
+
+            dragPower.strokesContainer.SetActive(false);
+            parContainer.SetActive(false);
 
             returnToMenu = false;
         }
@@ -367,7 +374,9 @@ public class MenuController : MonoBehaviour
 
             gameHandler.EnablePlayerCamera();
             inGame = true;
-            powerBar.gameObject.transform.parent.gameObject.SetActive(false);
+            powerBar.gameObject.transform.parent.gameObject.SetActive(true);
+            dragPower.strokesContainer.SetActive(true);
+            parContainer.SetActive(true);
         }
     }
 }

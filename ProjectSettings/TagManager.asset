@@ -12,13 +12,23 @@ TagManager:
   - Hole 6
   - Hole 7
   - Hole 8
-  - Hole9
+  - Hole 9
   - OutOfBounds
+  - Hole 1 Spawn
+  - Hole 2 Spawn
+  - Hole 3 Spawn
+  - Hole 4 Spawn
+  - Hole 5 Spawn
+  - Hole 6 Spawn
+  - Hole 7 Spawn
+  - Hole 8 Spawn
+  - Hole 9 Spawn
+  - Last Position
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ball
   - Water
   - UI
   - 

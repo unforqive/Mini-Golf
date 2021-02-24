@@ -35,6 +35,8 @@ public class CameraController : MonoBehaviour
 
     public bool cancelShot;
 
+    public RectTransform overHeadUI;
+
     void Start()
     {
         cancelShot = false;
@@ -43,6 +45,9 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        overHeadUI.rotation = Quaternion.Euler(camRotation.x, camRotation.y, 0);
+        overHeadUI.position = new Vector3(dragPower.ball.position.x, dragPower.ball.position.y + 0.5f, dragPower.ball.position.z);
+
         if (Input.GetMouseButton(1))
         {
             camRotation.x += speed * Input.GetAxis("Mouse Y") * cameraSmoothFactor * (-1);

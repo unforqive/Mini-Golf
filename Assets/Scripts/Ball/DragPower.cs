@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class DragPower : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class DragPower : MonoBehaviour
     public Camera playerCamera;
 
     public int strokes = 0;
+    public GameObject strokesContainer;
 
     public float minHitPower = 1f;
     public float maxHitPower = 100f;
@@ -36,27 +38,57 @@ public class DragPower : MonoBehaviour
 
     public bool preparingToShoot;
 
+    public TMPro.TMP_Text score;
+
+    public Vector3 lastPosition;
+
+    public GameObject indicator;
+
+    public GameObject fire;
+
+    public GameObject cancel;
+
     void Start()
     {
         preparingToShoot = false;
         powerBar.gameObject.transform.parent.gameObject.SetActive(false);
         canRotate = true;
         this.gameObject.SetActive(false);
-        ball.sleepThreshold = 0.05f; //default is 0.005f;
+        ball.sleepThreshold = 0.01f; //default is 0.005f;
+        score.GetComponent<TMPro.TMP_Text>().text = "STROKES " + strokes;
+        strokesContainer.SetActive(false);
+
+        fire.SetActive(true);
+        cancel.SetActive(false);
+        indicator.SetActive(true);
     }
 
     void Update()
     {
+        if (strokes == 12)
+        {
+            Debug.Log("stop playing");
+            //stop player from shooting
+        }
+
         if (ball != null)
         {
             if (Input.GetMouseButton(0) && !isMoving && !cameraController.cancelShot)
             {
                 preparingToShoot = true;
+
+                fire.SetActive(false);
+                cancel.SetActive(true);
+
                 CalculatePower();
             }
 
             if (Input.GetMouseButtonUp(0) && !isMoving && !cameraController.cancelShot)
             {
+                fire.SetActive(true);
+                cancel.SetActive(false);
+                indicator.SetActive(false);
+
                 cameraController.cancelShot = false;
                 preparingToShoot = false;
                 powerBar.gameObject.transform.parent.gameObject.SetActive(false);
@@ -73,6 +105,11 @@ public class DragPower : MonoBehaviour
 
             if (Input.GetMouseButtonUp(0) && cameraController.cancelShot)
             {
+                fire.SetActive(true);
+                cancel.SetActive(false);
+
+                powerBar.value = minHitPower;
+
                 cameraController.cancelShot = false;
                 powerBar.gameObject.transform.parent.gameObject.SetActive(true);
             }
@@ -88,9 +125,11 @@ public class DragPower : MonoBehaviour
         {
             if (ball.IsSleeping())
             {
+                lastPosition = ball.transform.position;
                 isMoving = false;
                 canRotate = true;
                 powerBar.gameObject.transform.parent.gameObject.SetActive(true);
+                indicator.SetActive(true);
             }
             else
             {
@@ -136,5 +175,18 @@ public class DragPower : MonoBehaviour
     {
         //add force to ball
         ball.AddForce(ballDir * power, ForceMode.Impulse);
+
+        //increase stroke count
+        strokes++;
+        UpdateScore(strokes);
+
+        //reset power and bar level to default after hitting ball
+        hitPower = minHitPower;
+        powerBar.value = hitPower;
+    }
+
+    public void UpdateScore(int stroke)
+    {
+        score.GetComponent<TMPro.TMP_Text>().text = "STROKES " + strokes;
     }
 }
