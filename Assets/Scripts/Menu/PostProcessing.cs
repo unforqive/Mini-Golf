@@ -42,6 +42,11 @@ public class PostProcessing : MonoBehaviour
         volume.profile.TryGetSettings(out vignette);
         volume.profile.TryGetSettings(out dof);
 
+        postText = GameObject.Find("post ON/OFF").GetComponent<TMPro.TMP_Text>();
+        ambientText = GameObject.Find("ambient ON/OFF").GetComponent<TMPro.TMP_Text>();
+        vignetteText = GameObject.Find("vignette ON/OFF").GetComponent<TMPro.TMP_Text>();
+        dofText = GameObject.Find("dof ON/OFF").GetComponent<TMPro.TMP_Text>();
+
         if (PostProcessingActive.postProcessingActive)
         {
             EnablePostProcessing(true);
