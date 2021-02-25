@@ -2,39 +2,37 @@ using UnityEngine;
 
 public class MenuManager : MonoBehaviour
 {
-	private void Awake()
+	public static MenuManager Instance;
+
+	[SerializeField] Menu[] menus;
+
+	void Awake()
 	{
-		MenuManager.Instance = this;
+		Instance = this;
 	}
 
 	public void OpenMenu(string menuName)
 	{
-		for (int i = 0; i < this.menus.Length; i++)
+		for (int i = 0; i < menus.Length; i++)
 		{
-			bool flag = this.menus[i].menuName == menuName;
-			if (flag)
+			if (menus[i].menuName == menuName)
 			{
-				this.OpenMenu(this.menus[i]);
+				menus[i].Open();
 			}
-			else
+			else if (menus[i].open)
 			{
-				bool open = this.menus[i].open;
-				if (open)
-				{
-					this.CloseMenu(this.menus[i]);
-				}
+				CloseMenu(menus[i]);
 			}
 		}
 	}
 
 	public void OpenMenu(Menu menu)
 	{
-		for (int i = 0; i < this.menus.Length; i++)
+		for (int i = 0; i < menus.Length; i++)
 		{
-			bool open = this.menus[i].open;
-			if (open)
+			if (menus[i].open)
 			{
-				this.CloseMenu(this.menus[i]);
+				CloseMenu(menus[i]);
 			}
 		}
 		menu.Open();
@@ -44,9 +42,4 @@ public class MenuManager : MonoBehaviour
 	{
 		menu.Close();
 	}
-
-	public static MenuManager Instance;
-
-	[SerializeField]
-	private Menu[] menus;
 }

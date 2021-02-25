@@ -1,15 +1,22 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
+using System.Linq;
 
 public class Launcher : MonoBehaviourPunCallbacks
 {
+    #region Variables
+    public static Launcher Instance;
+
     public Animator mainCameraAnimation;
     public MenuController menuController;
 
     private int timer;
     private bool startTimer;
+
     public GameObject loadingText;
     public GameObject unloadingText;
 
@@ -27,6 +34,20 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_InputField roomNameInputField;
     [SerializeField] TMP_Text errorText;
     [SerializeField] TMP_Text roomNameText;
+    [SerializeField] TMP_Text playerNameText;
+    [SerializeField] Transform roomListContent;
+    [SerializeField] GameObject roomListItemPrefab;
+    [SerializeField] Transform playerListContent;
+    [SerializeField] GameObject playerListItemPrefab;
+    //[SerializeField] GameObject startGameButton;
+
+    public EnterName enterName;
+    #endregion
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -39,7 +60,9 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public void JoinMultiplayer()
     {
-        Debug.Log("Connecting to Master");
+        playerListItemPrefab = null;
+        playerListContent = null;
+
         PhotonNetwork.ConnectUsingSettings();
 
         //call timer
@@ -51,11 +74,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        if (!alreadyConnected)
-        {
-            Debug.Log("Connected to Master");
-            PhotonNetwork.JoinLobby();
-        }  
+        Debug.Log("Connected to Master");
+        PhotonNetwork.JoinLobby();
     }
 
     public override void OnJoinedLobby()
@@ -63,7 +83,6 @@ public class Launcher : MonoBehaviourPunCallbacks
         startTimer2 = true;
 
         Debug.Log("Joined Lobby");
-        alreadyConnected = true;
     }
 
     public void CreateRoom()
@@ -73,14 +92,35 @@ public class Launcher : MonoBehaviourPunCallbacks
             return;
         }
         PhotonNetwork.CreateRoom(roomNameInputField.text);
-        Debug.Log("Creating Room: " + roomNameInputField.text);
+    }
+
+    public void JoinRoom(RoomInfo info)
+    {
+        PhotonNetwork.JoinRoom(info.Name);
+    }
+
+    public override void OnLeftRoom()
+    {
+        MenuManager.Instance.OpenMenu("Gamemode");
     }
 
     public override void OnJoinedRoom()
     {
         MenuManager.Instance.OpenMenu("Room Menu");
         Debug.Log("Joined Room: " + roomNameInputField.text);
-        roomNameText.text = "Current Room: " + PhotonNetwork.CurrentRoom.Name;
+        roomNameText.text = PhotonNetwork.CurrentRoom.Name;
+
+        Player[] players = PhotonNetwork.PlayerList;
+
+        foreach(Transform child in playerListContent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        for (int i = 0; i < players.Count(); i++)
+        {
+            Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
+        }
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -93,13 +133,24 @@ public class Launcher : MonoBehaviourPunCallbacks
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
-        Debug.Log("Leaving Room");
     }
 
-    public override void OnLeftRoom()
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        MenuManager.Instance.OpenMenu("Room Settings");
-        Debug.Log("Left Room");
+        foreach(Transform trans in roomListContent)
+        {
+            Destroy(trans.gameObject);
+        }
+
+        for (int i = 0; i < roomList.Count; i++)
+        {
+            Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
+        }
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
 
     public void LeaveMultiplayer()
@@ -109,19 +160,15 @@ public class Launcher : MonoBehaviourPunCallbacks
         mainCameraAnimation.SetBool("CameraDown", false);
         startTimer3 = true;
         unloadingText.SetActive(true);
-
         PhotonNetwork.Disconnect();
-        Debug.Log("Disconnecting");
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        MenuManager.Instance.OpenMenu("");
-        Debug.Log("Disconnected from PUN server, Reason: " + cause);
-        alreadyConnected = false;
         startTimer4 = true;
     }
 
+    #region Update
     void Update()
     {
         #region Loading Wait Time
@@ -200,4 +247,5 @@ public class Launcher : MonoBehaviourPunCallbacks
 
         #endregion
     }
+    #endregion
 }
