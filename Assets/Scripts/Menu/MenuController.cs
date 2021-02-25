@@ -1,382 +1,390 @@
-﻿using System.Threading;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+
 public class MenuController : MonoBehaviour
 {
-    #region Public Variables
+	[Header("Menu Game Objects")]
+	public GameObject StartScreen;
+	public GameObject SettingsMenu;
+	public GameObject PlayMenu;
+	public GameObject SkinsMenu;
+	public GameObject ShopMenu;
+	public GameObject GiftsMenu;
+	public GameObject SplashScreen;
+	public static string menu;
+	public static string nextMenu;
 
-    public GameObject StartScreen;
-    public GameObject SettingsMenu;
-    public GameObject PlayMenu;
-    public GameObject SkinsMenu;
-    public GameObject ShopMenu;
-    public GameObject GiftsMenu;
-    public GameObject SplashScreen;
+	[Header("Menu Animators")]
+	public Animator SplashScreenAnim;
+	public Animator StartScreenAnim;
+	public Animator SettingsMenuAnimation;
+	public Animator PlayMenuAnimation;
+	public Animator RoomSettingsAnim;
+	public Animator SkinsMenuAnimation;
+	public Animator ShopMenuAnimation;
+	public Animator GiftsMenuAnimation;
 
-    public static string menu;
-    public static string nextMenu;
+	[Header("Public Variables")]
+	public bool returnToMenu;
+	public int quality;
+	public bool inGame;
+	public bool menuClosed;
 
-    public Animator splashScreenButtonAnimation;
-    public Animator StartScreenButtonsAnimation;
-    public Animator SettingsMenuAnimation;
-    public Animator PlayMenuAnimation;
-    public Animator SkinsMenuAnimation;
-    public Animator ShopMenuAnimation;
-    public Animator GiftsMenuAnimation;
+	[Header("Public Objects")]
+	public AudioHandler audioHandler;
+	public TMP_Text qualityText;
+	public TMP_Dropdown qualityDropDown;
+	public GameHandler gameHandler;
+	public Slider powerBar;
+	public DragPower dragPower;
+	public GameObject parContainer;
 
-    public bool startScreenAnimationTimer;
+	private bool startScreenAnimationTimer;
+	private int MenuAnimationTimer;
 
-    public bool returnToMenu;
+	void Awake()
+	{
+		quality = PlayerPrefs.GetInt("Quality");
+		qualityDropDown.value = quality;
 
-    public AudioHandler audioHandler;
+		Debug.Log("Player Preferences Loaded.");
+	}
 
-    public TMPro.TMP_Text qualityText;
+	void Start()
+	{
+		menu = "Splash Screen";
 
-    public int quality;
+		startScreenAnimationTimer = false;
+		MenuAnimationTimer = 0;
 
-    public TMP_Dropdown qualityDropDown;
+		returnToMenu = false;
 
-    public GameHandler gameHandler;
+		inGame = false;
+		parContainer.SetActive(false);
+	}
 
-    public bool inGame;
+	void Update()
+	{
+		if (startScreenAnimationTimer)
+		{
+			MenuAnimationTimer += 1;
+		}
 
-    public Slider powerBar;
+		if (MenuAnimationTimer > 20)
+		{
+			if (nextMenu == "Start Menu")
+			{
+				menu = "Start Screen";
+			}
 
-    public DragPower dragPower;
-    public GameObject parContainer;
+			if (nextMenu == "Play Menu")
+			{
+				menu = "Play Screen";
+			}
 
-    #endregion
+			if (nextMenu == "Settings Menu")
+			{
+				menu = "Settings Screen";
+			}
 
-    #region Private Variables
+			if (nextMenu == "Shop Menu")
+			{
+				menu = "Shop Screen";
+			}
 
-    private int MenuAnimationTimer;
+			if (nextMenu == "Skins Menu")
+			{
+				menu = "Skins Screen";
+			}
 
-    #endregion
+			if (nextMenu == "Gifts Menu")
+			{
+				menu = "Gifts Screen";
+			}
 
-    void Awake()
-    {
-        quality = PlayerPrefs.GetInt("Quality");
-        qualityDropDown.value = quality;
+			startScreenAnimationTimer = false;
+			MenuAnimationTimer = 0;
+		}
 
-        Debug.Log("Player Preferences Loaded.");
-    }
+		if (menu == "Splash Screen")
+		{
+			SplashScreen.SetActive(true);
+			StartScreen.SetActive(false);
+			SettingsMenu.SetActive(false);
+			PlayMenu.SetActive(false);
+			SkinsMenu.SetActive(false);
+			ShopMenu.SetActive(false);
+			GiftsMenu.SetActive(false);
+		}
 
-    void Start()
-    {
-        menu = "Splash Screen";
+		if (menu == "Start Screen")
+		{
+			SplashScreen.SetActive(false);
+			StartScreen.SetActive(true);
+			SettingsMenu.SetActive(false);
+			PlayMenu.SetActive(false);
+			SkinsMenu.SetActive(false);
+			ShopMenu.SetActive(false);
+			GiftsMenu.SetActive(false);
+		}
 
-        startScreenAnimationTimer = false;
-        MenuAnimationTimer = 0;
+		if (menu == "Start Screen" && returnToMenu)
+		{
+			SplashScreen.SetActive(false);
+			StartScreen.SetActive(true);
+			SettingsMenu.SetActive(false);
+			PlayMenu.SetActive(false);
+			SkinsMenu.SetActive(false);
+			ShopMenu.SetActive(false);
+			GiftsMenu.SetActive(false);
+			StartScreenAnim.SetBool("Start Appear", true);
+			StartScreenAnim.SetBool("Start Disappear", false);
+			dragPower.strokesContainer.SetActive(false);
+			parContainer.SetActive(false);
+			returnToMenu = false;
+		}
 
-        returnToMenu = false;
+		if (menu == "Play Screen")
+		{
+			SplashScreen.SetActive(false);
+			StartScreen.SetActive(false);
+			SettingsMenu.SetActive(false);
+			PlayMenu.SetActive(true);
+			SkinsMenu.SetActive(false);
+			ShopMenu.SetActive(false);
+			GiftsMenu.SetActive(false);
+		}
 
-        inGame = false;
-        parContainer.SetActive(false);
-    }
+		if (menu == "Settings Screen")
+		{
+			SplashScreen.SetActive(false);
+			StartScreen.SetActive(false);
+			SettingsMenu.SetActive(true);
+			PlayMenu.SetActive(false);
+			SkinsMenu.SetActive(false);
+			ShopMenu.SetActive(false);
+			GiftsMenu.SetActive(false);
+		}
 
-    void Update()
-    {
-        if (startScreenAnimationTimer)
-        {
-            MenuAnimationTimer += 1;
-        }
+		if (menu == "Shop Screen")
+		{
+			SplashScreen.SetActive(false);
+			StartScreen.SetActive(false);
+			SettingsMenu.SetActive(true);
+			PlayMenu.SetActive(false);
+			SkinsMenu.SetActive(false);
+			ShopMenu.SetActive(true);
+			GiftsMenu.SetActive(false);
+		}
 
-        if (MenuAnimationTimer > 20)
-        {
-            if (nextMenu == "Start Menu")
-            {
-                menu = "Start Screen";
-            }
+		if (menu == "Shop Screen")
+		{
+			SplashScreen.SetActive(false);
+			StartScreen.SetActive(false);
+			SettingsMenu.SetActive(false);
+			PlayMenu.SetActive(false);
+			SkinsMenu.SetActive(false);
+			ShopMenu.SetActive(true);
+			GiftsMenu.SetActive(false);
+		}
 
-            if (nextMenu == "Play Menu")
-            {
-                menu = "Play Screen";
-            }
+		if (menu == "Skins Screen")
+		{
+			SplashScreen.SetActive(false);
+			StartScreen.SetActive(false);
+			SettingsMenu.SetActive(false);
+			PlayMenu.SetActive(false);
+			SkinsMenu.SetActive(true);
+			ShopMenu.SetActive(false);
+			GiftsMenu.SetActive(false);
+		}
 
-            if (nextMenu == "Settings Menu")
-            {
-                menu = "Settings Screen";
-            }
-
-            if (nextMenu == "Shop Menu")
-            {
-                menu = "Shop Screen";
-            }
-
-            if (nextMenu == "Skins Menu")
-            {
-                menu = "Skins Screen";
-            }
-
-            if (nextMenu == "Gifts Menu")
-            {
-                menu = "Gifts Screen";
-            }
-
-            startScreenAnimationTimer = false;
-            MenuAnimationTimer = 0;
-        }
-
-        if (menu == "Splash Screen")
-        {
-            SplashScreen.SetActive(true);
-            StartScreen.SetActive(false);
-            SettingsMenu.SetActive(false);
-            PlayMenu.SetActive(false);
-            SkinsMenu.SetActive(false);
-            ShopMenu.SetActive(false);
-            GiftsMenu.SetActive(false);
-        }
-
-        if (menu == "Start Screen")
-        {
-            SplashScreen.SetActive(false);
-            StartScreen.SetActive(true);
-            SettingsMenu.SetActive(false);
-            PlayMenu.SetActive(false);
-            SkinsMenu.SetActive(false);
-            ShopMenu.SetActive(false);
-            GiftsMenu.SetActive(false);
-        }
-
-        if (menu == "Start Screen" && returnToMenu)
-        {
-            SplashScreen.SetActive(false);
-            StartScreen.SetActive(true);
-            SettingsMenu.SetActive(false);
-            PlayMenu.SetActive(false);
-            SkinsMenu.SetActive(false);
-            ShopMenu.SetActive(false);
-            GiftsMenu.SetActive(false);
-
-            StartScreenButtonsAnimation.SetBool("Start Appear", true);
-            StartScreenButtonsAnimation.SetBool("Start Disappear", false);
-
-            dragPower.strokesContainer.SetActive(false);
-            parContainer.SetActive(false);
-
-            returnToMenu = false;
-        }
-
-        if (menu == "Play Screen")
-        {
-            SplashScreen.SetActive(false);
-            StartScreen.SetActive(false);
-            SettingsMenu.SetActive(false);
-            PlayMenu.SetActive(true);
-            SkinsMenu.SetActive(false);
-            ShopMenu.SetActive(false);
-            GiftsMenu.SetActive(false);
-        }
-
-        if (menu == "Settings Screen")
-        {
-            SplashScreen.SetActive(false);
-            StartScreen.SetActive(false);
-            SettingsMenu.SetActive(true);
-            PlayMenu.SetActive(false);
-            SkinsMenu.SetActive(false);
-            ShopMenu.SetActive(false);
-            GiftsMenu.SetActive(false);
-        }
-
-        if (menu == "Shop Screen")
-        {
-            SplashScreen.SetActive(false);
-            StartScreen.SetActive(false);
-            SettingsMenu.SetActive(false);
-            PlayMenu.SetActive(false);
-            SkinsMenu.SetActive(false);
-            ShopMenu.SetActive(true);
-            GiftsMenu.SetActive(false);
-        }
-
-        if (menu == "Skins Screen")
-        {
-            SplashScreen.SetActive(false);
-            StartScreen.SetActive(false);
-            SettingsMenu.SetActive(false);
-            PlayMenu.SetActive(false);
-            SkinsMenu.SetActive(true);
-            ShopMenu.SetActive(false);
-            GiftsMenu.SetActive(false);
-        }
-
-        if (menu == "Gifts Screen")
-        {
-            SplashScreen.SetActive(false);
-            StartScreen.SetActive(false);
-            SettingsMenu.SetActive(false);
-            PlayMenu.SetActive(false);
-            SkinsMenu.SetActive(false);
-            ShopMenu.SetActive(false);
-            GiftsMenu.SetActive(true);
-        }
-    }
+		if (menu == "Gifts Screen")
+		{
+			SplashScreen.SetActive(false);
+			StartScreen.SetActive(false);
+			SettingsMenu.SetActive(false);
+			PlayMenu.SetActive(false);
+			SkinsMenu.SetActive(false);
+			ShopMenu.SetActive(false);
+			GiftsMenu.SetActive(true);
+		}
+	}
 
     #region Menu Buttons
 
     public void BeginningScreen()
-    {
-        startScreenAnimationTimer = true;
+	{
+		startScreenAnimationTimer = true;
 
-        nextMenu = "Start Menu";
+		nextMenu = "Start Menu";
 
-        splashScreenButtonAnimation.SetBool("CameraDown", true);
-    }
+		SplashScreenAnim.SetBool("CameraDown", true);
+	}
 
-    public void Play()
-    {
-        startScreenAnimationTimer = true;
+	public void Play()
+	{
+		startScreenAnimationTimer = true;
 
-        nextMenu = "Play Menu";
+		nextMenu = "Play Menu";
 
-        StartScreenButtonsAnimation.SetBool("Start Appear", false);
-        StartScreenButtonsAnimation.SetBool("Start Disappear", true);
+		StartScreenAnim.SetBool("Start Appear", false);
+		StartScreenAnim.SetBool("Start Disappear", true);
 
-        audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
-    }
+		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
+	}
 
-    public void Settings()
-    {
-        startScreenAnimationTimer = true;
+	public void Settings()
+	{
+		startScreenAnimationTimer = true;
 
-        nextMenu = "Settings Menu";
+		nextMenu = "Settings Menu";
 
-        StartScreenButtonsAnimation.SetBool("Start Appear", false);
-        StartScreenButtonsAnimation.SetBool("Start Disappear", true);
+		StartScreenAnim.SetBool("Start Appear", false);
+		StartScreenAnim.SetBool("Start Disappear", true);
 
-        audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
-    }
+		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
+	}
 
-    public void Shop()
-    {
-        startScreenAnimationTimer = true;
+	public void Shop()
+	{
+		startScreenAnimationTimer = true;
 
-        nextMenu = "Shop Menu";
+		nextMenu = "Shop Menu";
 
-        StartScreenButtonsAnimation.SetBool("Start Appear", false);
-        StartScreenButtonsAnimation.SetBool("Start Disappear", true);
+		StartScreenAnim.SetBool("Start Appear", false);
+		StartScreenAnim.SetBool("Start Disappear", true);
 
-        audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
-    }
+		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
+	}
 
-    public void Skins()
-    {
-        startScreenAnimationTimer = true;
+	public void Skins()
+	{
+		startScreenAnimationTimer = true;
 
-        nextMenu = "Skins Menu";
+		nextMenu = "Skins Menu";
 
-        StartScreenButtonsAnimation.SetBool("Start Appear", false);
-        StartScreenButtonsAnimation.SetBool("Start Disappear", true);
+		StartScreenAnim.SetBool("Start Appear", false);
+		StartScreenAnim.SetBool("Start Disappear", true);
 
-        audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
-    }
+		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
+	}
 
-    public void Gifts()
-    {
-        startScreenAnimationTimer = true;
+	public void Gifts()
+	{
+		startScreenAnimationTimer = true;
 
-        nextMenu = "Gifts Menu";
+		nextMenu = "Gifts Menu";
 
-        StartScreenButtonsAnimation.SetBool("Start Appear", false);
-        StartScreenButtonsAnimation.SetBool("Start Disappear", true);
+		StartScreenAnim.SetBool("Start Appear", false);
+		StartScreenAnim.SetBool("Start Disappear", true);
 
-        audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
-    }
+		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
+	}
 
     #endregion
+
+    public void CloseForGood()
+	{
+		if (menu == "Play Screen")
+		{
+			PlayMenuAnimation.SetBool("Play Appear", false);
+			PlayMenuAnimation.SetBool("Play Disappear", true);
+			audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
+		}
+	}
 
     #region Close Menu Buttons
 
     public void CloseMenu()
-    {
-        if (menu == "Play Screen")
-        {
-            PlayMenuAnimation.SetBool("Play Appear", false);
-            PlayMenuAnimation.SetBool("Play Disappear", true);
-            returnToMenu = true;
+	{
+		if (menu == "Play Screen")
+		{
+			PlayMenuAnimation.SetBool("Play Appear", false);
+			PlayMenuAnimation.SetBool("Play Disappear", true);
+			returnToMenu = true;
 
-            audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
-        }
+			audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
+		}
 
-        if (menu == "Settings Screen")
-        {
-            SettingsMenuAnimation.SetBool("Settings Appear", false);
-            SettingsMenuAnimation.SetBool("Settings Disappear", true);
-            returnToMenu = true;
+		if (menu == "Settings Screen")
+		{
+			SettingsMenuAnimation.SetBool("Settings Appear", false);
+			SettingsMenuAnimation.SetBool("Settings Disappear", true);
+			returnToMenu = true;
 
-            audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
-        }
+			audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
+		}
 
-        if (menu == "Shop Screen")
-        {
-            ShopMenuAnimation.SetBool("Shop Appear", false);
-            ShopMenuAnimation.SetBool("Shop Disappear", true);
-            returnToMenu = true;
+		if (menu == "Shop Screen")
+		{
+			ShopMenuAnimation.SetBool("Shop Appear", false);
+			ShopMenuAnimation.SetBool("Shop Disappear", true);
+			returnToMenu = true;
 
-            audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
-        }
+			audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
+		}
 
-        if (menu == "Skins Screen")
-        {
-            SkinsMenuAnimation.SetBool("Skins Appear", false);
-            SkinsMenuAnimation.SetBool("Skins Disappear", true);
-            returnToMenu = true;
+		if (menu == "Skins Screen")
+		{
+			SkinsMenuAnimation.SetBool("Skins Appear", false);
+			SkinsMenuAnimation.SetBool("Skins Disappear", true);
+			returnToMenu = true;
 
-            audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
-        }
+			audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
+		}
 
-        if (menu == "Gifts Screen")
-        {
-            GiftsMenuAnimation.SetBool("Gifts Appear", false);
-            GiftsMenuAnimation.SetBool("Gifts Disappear", true);
-            returnToMenu = true;
+		if (menu == "Gifts Screen")
+		{
+			GiftsMenuAnimation.SetBool("Gifts Appear", false);
+			GiftsMenuAnimation.SetBool("Gifts Disappear", true);
+			returnToMenu = true;
 
-            audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
-        }
+			audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
+		}
 
-        startScreenAnimationTimer = true;
-        nextMenu = "Start Menu";
-    }
+		startScreenAnimationTimer = true;
+		nextMenu = "Start Menu";
+		menuClosed = true;
+	}
 
-    #endregion
+	#endregion
 
     public void StartMenu()
-    {
-        menu = "Start Screen";
+	{
+		menu = "Start Screen";
 
-        StartScreenButtonsAnimation.SetBool("Start Appear", true);
-        StartScreenButtonsAnimation.SetBool("Start Disappear", false);
+		StartScreenAnim.SetBool("Start Appear", true);
+		StartScreenAnim.SetBool("Start Disappear", false);
 
-        audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
-    }
+		audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
+	}
 
-    public void SetQuality(int qualityIndex)
-    {
-        QualitySettings.SetQualityLevel(qualityIndex);
-        quality = qualityIndex;
-    }
+	public void SetQuality(int qualityIndex)
+	{
+		QualitySettings.SetQualityLevel(qualityIndex);
+		quality = qualityIndex;
+	}
 
-    public void SetQualityPref()
-    {
-        PlayerPrefs.SetInt("Quality", quality);
+	public void SetQualityPref()
+	{
+		PlayerPrefs.SetInt("Quality", quality);
 
-        Debug.Log("Player Preferences Saved.");
-    }
+		Debug.Log("Player Preferences Saved.");
+	}
 
-    public void LaunchGame()
-    {
-        if (menu == "Play Screen")
-        {
-            CloseMenu();
+	public void LaunchGame()
+	{
+		if (menu == "Play Screen")
+		{
+			CloseMenu();
 
-            gameHandler.EnablePlayerCamera();
-            inGame = true;
-            powerBar.gameObject.transform.parent.gameObject.SetActive(true);
-            dragPower.strokesContainer.SetActive(true);
-            parContainer.SetActive(true);
-        }
-    }
+			gameHandler.EnablePlayerCamera();
+			inGame = true;
+			powerBar.gameObject.transform.parent.gameObject.SetActive(true);
+			dragPower.strokesContainer.SetActive(true);
+			parContainer.SetActive(true);
+		}
+	}
 }
