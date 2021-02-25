@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Security.Cryptography;
 
 public class DragPower : MonoBehaviour
 {
@@ -50,8 +50,15 @@ public class DragPower : MonoBehaviour
 
     public ParHandler par;
 
+    public PhotonView PV;
+
     void Start()
     {
+        if (!PV.IsMine)
+        {
+            Destroy(ball);
+        }
+
         lastPosition = par.hole1Spawn.transform.position;
 
         preparingToShoot = false;
@@ -69,6 +76,11 @@ public class DragPower : MonoBehaviour
 
     void Update()
     {
+        if (!PV.IsMine) //if not my player
+        {
+            Destroy(ball);
+        }
+
         if (strokes == 12)
         {
             Debug.Log("stop playing");

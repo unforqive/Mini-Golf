@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using Photon.Pun;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -37,8 +34,16 @@ public class CameraController : MonoBehaviour
 
     public RectTransform overHeadUI;
 
+    public PhotonView PV;
+
+
     void Start()
     {
+        if (!PV.IsMine)
+        {
+            Destroy(gameObject);
+        }
+
         cancelShot = false;
         Line.SetActive(false);
     }
