@@ -35,6 +35,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] Transform roomListContent;
     [SerializeField] GameObject roomListItemPrefab;
 
+    public EnterName enterName;
+
     private void Awake()
     {
         Instance = this;
@@ -76,6 +78,8 @@ public class Launcher : MonoBehaviourPunCallbacks
 
         Debug.Log("Joined Lobby");
         alreadyConnected = true;
+        PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000"); 
+        Debug.Log(PhotonNetwork.NickName);
     }
 
     public void CreateRoom()
