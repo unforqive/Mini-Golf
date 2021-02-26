@@ -16,6 +16,6 @@ public class LoadName : MonoBehaviour
 
     public void DisplayName()
     {
-        text.text = "Playing as " + enterName.userName;
+        text.text = enterName.userName;
     }
 }

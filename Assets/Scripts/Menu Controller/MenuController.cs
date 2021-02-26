@@ -20,11 +20,6 @@ public class MenuController : MonoBehaviour
 	public Animator StartScreenAnim;
 	public Animator SettingsMenuAnimation;
 	public Animator PlayMenuAnimation;
-	public Animator RoomOptAnim;
-	public Animator RoomSetAnim;
-	public Animator RoomAnim;
-	public Animator FindRoomAnim;
-	public Animator RoomSettingsAnim;
 	public Animator SkinsMenuAnimation;
 	public Animator ShopMenuAnimation;
 	public Animator GiftsMenuAnimation;
@@ -288,16 +283,6 @@ public class MenuController : MonoBehaviour
 	}
 
 	#endregion
-
-	public void CloseForGood()
-	{
-		if (menu == "Play Screen")
-		{
-			PlayMenuAnimation.SetBool("Play Appear", false);
-			PlayMenuAnimation.SetBool("Play Disappear", true);
-			audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
-		}
-	}
 
 	#region Close Menu Buttons
 

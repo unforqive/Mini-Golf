@@ -23,10 +23,4 @@ public class GameSettings : MonoBehaviour
     {
         
     }
-
-    public void SetAmountOfBots()
-    {
-        leaderboard.amountOfBots = Convert.ToInt32(amountOfBots.value);
-        leaderboard.amountOfPlayers = leaderboard.amountOfBots + 1;
-    }
 }

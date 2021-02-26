@@ -34,8 +34,12 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text roomNameText;
     [SerializeField] Transform roomListContent;
     [SerializeField] GameObject roomListItemPrefab;
+    [SerializeField] Transform playerListContent;
+    [SerializeField] GameObject playerListItemPrefab;
 
     public EnterName enterName;
+
+    public GameObject startGameButton;
 
     private void Awake()
     {
@@ -43,6 +47,16 @@ public class Launcher : MonoBehaviourPunCallbacks
     }
     void Start()
     {
+        /*
+        //Find Gameobjects at start
+        mainCameraAnimation = GameObject.Find("Main Camera").GetComponent<Animator>();
+        menuController = GameObject.Find("Main Camera").GetComponent<MenuController>();
+        loadingText = GameObject.Find("loadingText");
+        unloadingText = GameObject.Find("unloadingText");
+        */
+
+        loadingText.SetActive(false);
+        unloadingText.SetActive(false);
         alreadyConnected = false;
     }
 
@@ -97,6 +111,25 @@ public class Launcher : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu("Room Menu");
         Debug.Log("Joined Room: " + roomNameInputField.text);
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
+
+        Player[] players = PhotonNetwork.PlayerList;
+
+        foreach (Transform child in playerListContent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        for (int i = 0; i < players.Count(); i++)
+        {
+            Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
+        }
+
+        startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        startGameButton.SetActive(PhotonNetwork.IsMasterClient);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -127,8 +160,17 @@ public class Launcher : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < roomList.Count; i++)
         {
+            if (roomList[i].RemovedFromList)
+            {
+                continue;
+            }
             Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
         }
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
 
     public void LeaveMultiplayer()

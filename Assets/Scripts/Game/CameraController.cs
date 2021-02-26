@@ -1,5 +1,4 @@
-﻿using Photon.Pun;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -34,16 +33,8 @@ public class CameraController : MonoBehaviour
 
     public RectTransform overHeadUI;
 
-    public PhotonView PV;
-
-
     void Start()
     {
-        if (!PV.IsMine)
-        {
-            Destroy(gameObject);
-        }
-
         cancelShot = false;
         Line.SetActive(false);
     }
