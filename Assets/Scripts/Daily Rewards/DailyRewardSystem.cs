@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using TMPro;
+using System.Threading;
 
 namespace DailyRewardSystem
 {
@@ -32,12 +33,19 @@ namespace DailyRewardSystem
         [SerializeField] Button claimButton;
         [SerializeField] TMP_Text noMoreRewardsText;
         [SerializeField] GameObject rewardsPopup;
+        [SerializeField] GameObject rewardsPrompt;
 
         [SerializeField] GameObject Day1Overlay;
         [SerializeField] GameObject Day2Overlay;
         [SerializeField] GameObject Day3Overlay;
         [SerializeField] GameObject Day4Overlay;
         [SerializeField] GameObject Day5Overlay;
+
+        [Space]
+        [Header("Animation")]
+        public Animator RewardAnim;
+        public Animator RewardPopup;
+        public Animator RewardNoti;
 
         [Space]
         [Header("Rewards Objects")]
@@ -55,17 +63,26 @@ namespace DailyRewardSystem
         [Space]
         [Header("Timing")]
         //next reward wait delay
-        [SerializeField] double nextRewardDelay = 10f;
+        [SerializeField] double nextRewardDelay = 24f;
+        [SerializeField] float checkForRewardDelay = 5f;
         [SerializeField] int consecutiveDays = 0;
 
         private int nextRewardIndex;
-        public bool noMoreRewards = false;
+        private bool isRewardReady;
+        private bool noMoreRewards = false;
+
+        private bool startTimer;
+        public int timer;
+
+        private string type;
 
         void Start()
         {
             Initalize();
             CheckForConsecutiveDays();
-            CheckForRewards();
+
+            StopAllCoroutines();
+            StartCoroutine(CheckForRewards());
 
             rewardsPopup.SetActive(false);
         }
@@ -77,11 +94,39 @@ namespace DailyRewardSystem
                 noMoreRewardsText.gameObject.SetActive(true);
                 claimButton.gameObject.SetActive(false);
             }
+
+            if (!noMoreRewards)
+            {
+                noMoreRewardsText.gameObject.SetActive(false);
+                claimButton.gameObject.SetActive(true);
+            }
+
+            if (startTimer)
+            {
+                timer += 1;
+            }
+
+            if (timer == 400)
+            {
+                RewardPopup.SetBool("In", false);
+                RewardPopup.SetBool("Out", true);
+                timer = 0;
+                startTimer = false;
+            }
         }
 
         void CheckForConsecutiveDays()
         {
             //check for day number (0-4) and set active (true/false)
+
+            if (consecutiveDays == 0)
+            {
+                Day1Overlay.SetActive(false);
+                Day2Overlay.SetActive(false);
+                Day3Overlay.SetActive(false);
+                Day4Overlay.SetActive(false);
+                Day5Overlay.SetActive(false);
+            }
 
             if (consecutiveDays == 1)
             {
@@ -154,26 +199,34 @@ namespace DailyRewardSystem
             }
         }
 
-        void CheckForRewards()
+        IEnumerator CheckForRewards()
         {
-            DateTime currentDatetime = DateTime.Now;
-            DateTime rewardClaimDatetime = DateTime.Parse(PlayerPrefs.GetString("Reward_Claim_Datetime", currentDatetime.ToString()));
-
-            //get total between these 2 dates
-            double elapsedHours = (currentDatetime - rewardClaimDatetime).TotalSeconds;
-
-            if(elapsedHours >= nextRewardDelay)
+            while (true)
             {
-                ActivateReward();
-            }
-            else
-            {
-                DeactivateReward();
-            }
+                if (!isRewardReady)
+                {
+                    DateTime currentDatetime = DateTime.Now;
+                    DateTime rewardClaimDatetime = DateTime.Parse(PlayerPrefs.GetString("Reward_Claim_Datetime", currentDatetime.ToString()));
+
+                    //get total between these 2 dates
+                    double elapsedHours = (currentDatetime - rewardClaimDatetime).TotalHours;
+
+                    if (elapsedHours >= nextRewardDelay)
+                    {
+                        ActivateReward();
+                    }
+                    else
+                    {
+                        DeactivateReward();
+                    }
+                }
+                yield return new WaitForSeconds(checkForRewardDelay);
+            } 
         }
 
         void ActivateReward()
         {
+            isRewardReady = true;
             noMoreRewards = false;
 
             //Update reward UI
@@ -183,16 +236,31 @@ namespace DailyRewardSystem
                 if (reward.Amount == 100)
                 {
                     coinsSmall.SetActive(true);
+                    coinsMedium.SetActive(false);
+                    coinsLarge.SetActive(false);
+
+                    gemsSmall.SetActive(false);
+                    gemsLarge.SetActive(false);
                 }
 
-                else if (reward.Amount == 500)
+                if (reward.Amount == 500)
                 {
+                    coinsSmall.SetActive(false);
                     coinsMedium.SetActive(true);
+                    coinsLarge.SetActive(false);
+
+                    gemsSmall.SetActive(false);
+                    gemsLarge.SetActive(false);
                 }
 
-                else if (reward.Amount == 2000)
+                if (reward.Amount == 2000)
                 {
+                    coinsSmall.SetActive(false);
+                    coinsMedium.SetActive(false);
                     coinsLarge.SetActive(true);
+
+                    gemsSmall.SetActive(false);
+                    gemsLarge.SetActive(false);
                 }
      
             }
@@ -200,16 +268,26 @@ namespace DailyRewardSystem
             {
                 if (reward.Amount == 2)
                 {
+                    coinsSmall.SetActive(false);
+                    coinsMedium.SetActive(false);
+                    coinsLarge.SetActive(false);
+
                     gemsSmall.SetActive(true);
+                    gemsLarge.SetActive(false);
                 }
 
-                else if (reward.Amount == 5)
+                if (reward.Amount == 5)
                 {
+                    coinsSmall.SetActive(false);
+                    coinsMedium.SetActive(false);
+                    coinsLarge.SetActive(false);
+
+                    gemsSmall.SetActive(false);
                     gemsLarge.SetActive(true);
                 }
             }
 
-            rewardAmountText.text = string.Format("+{0}", reward.Amount);
+            rewardAmountText.text = reward.Amount + " " + type;
 
             if (consecutiveDays == 5)
             {
@@ -219,22 +297,31 @@ namespace DailyRewardSystem
 
         void DeactivateReward()
         {
+            isRewardReady = false;
             noMoreRewards = true;
-            rewardsPopup.SetActive(true);
         }
 
         void OnClaimButtonClick()
         {
+            rewardsPrompt.SetActive(true);
+            RewardPopup.SetBool("In", true);
+            RewardPopup.SetBool("Out", false);
+
             consecutiveDays += 1;
             PlayerPrefs.SetInt("Consecutive_Days", consecutiveDays);
 
             CheckForConsecutiveDays();
+
+            rewardsPopup.SetActive(true);
+
+            startTimer = true;
 
             Reward reward = rewardsDB.GetReward(nextRewardIndex);
 
             //Check reward type
             if (reward.Type == RewardType.Coins)
             {
+                type = "Coins";
                 Debug.Log("<color=yellow>" + reward.Type.ToString() + "Claimed : </color>+" + reward.Amount);
                 CurrencyData.Coins += reward.Amount;
 
@@ -243,11 +330,14 @@ namespace DailyRewardSystem
             } 
             else if (reward.Type == RewardType.Gems)
             {
+                type = "Gems";
                 Debug.Log("<color=purple>" + reward.Type.ToString() + "Claimed : </color>+" + reward.Amount);
                 CurrencyData.Gems += reward.Amount;
 
                 //TODO
                 UpdateGemsTextUI();
+
+                isRewardReady = false;
             }
 
             //Save next reward index
@@ -263,6 +353,12 @@ namespace DailyRewardSystem
             PlayerPrefs.SetString("Reward_Claim_Datetime", DateTime.Now.ToString());
 
             DeactivateReward();
+
+            RewardAnim.SetBool("In", false);
+            RewardAnim.SetBool("Out", true);
+
+            RewardNoti.SetBool("In", true);
+            RewardNoti.SetBool("Out", false);
         }
 
         //Update UI (coins, gems)
@@ -274,6 +370,26 @@ namespace DailyRewardSystem
         void UpdateGemsTextUI()
         {
             gemsText.text = CurrencyData.Gems.ToString();
+        }
+
+        public void CloseButton()
+        {
+            rewardsPrompt.SetActive(true);
+
+            RewardAnim.SetBool("In", false);
+            RewardAnim.SetBool("Out", true);
+
+            RewardNoti.SetBool("In", true);
+            RewardNoti.SetBool("Out", false);
+        }
+
+        public void ShowRewards()
+        {
+            RewardAnim.SetBool("In", true);
+            RewardAnim.SetBool("Out", false);
+
+            RewardNoti.SetBool("In", false);
+            RewardNoti.SetBool("Out", true);
         }
     }
 }

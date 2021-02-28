@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DailyRewardSystem;
 
 public class MenuController : MonoBehaviour
 {
@@ -10,10 +11,13 @@ public class MenuController : MonoBehaviour
 	public GameObject PlayMenu;
 	public GameObject SkinsMenu;
 	public GameObject ShopMenu;
-	public GameObject GiftsMenu;
 	public GameObject SplashScreen;
 	public static string menu;
 	public static string nextMenu;
+
+	public GameObject DailyReward;
+
+	public DailyRewardSystem.DailyRewardSystem rewardSystem;
 
 	[Header("Menu Animators")]
 	public Animator SplashScreenAnim;
@@ -22,7 +26,6 @@ public class MenuController : MonoBehaviour
 	public Animator PlayMenuAnimation;
 	public Animator SkinsMenuAnimation;
 	public Animator ShopMenuAnimation;
-	public Animator GiftsMenuAnimation;
 
 	[Header("Public Variables")]
 	public bool returnToMenu;
@@ -97,11 +100,6 @@ public class MenuController : MonoBehaviour
 				menu = "Skins Screen";
 			}
 
-			if (nextMenu == "Gifts Menu")
-			{
-				menu = "Gifts Screen";
-			}
-
 			startScreenAnimationTimer = false;
 			MenuAnimationTimer = 0;
 		}
@@ -114,7 +112,6 @@ public class MenuController : MonoBehaviour
 			PlayMenu.SetActive(false);
 			SkinsMenu.SetActive(false);
 			ShopMenu.SetActive(false);
-			GiftsMenu.SetActive(false);
 		}
 
 		if (menu == "Start Screen")
@@ -125,7 +122,8 @@ public class MenuController : MonoBehaviour
 			PlayMenu.SetActive(false);
 			SkinsMenu.SetActive(false);
 			ShopMenu.SetActive(false);
-			GiftsMenu.SetActive(false);
+
+			DailyReward.SetActive(true);
 		}
 
 		if (menu == "Start Screen" && returnToMenu)
@@ -136,9 +134,15 @@ public class MenuController : MonoBehaviour
 			PlayMenu.SetActive(false);
 			SkinsMenu.SetActive(false);
 			ShopMenu.SetActive(false);
-			GiftsMenu.SetActive(false);
+
 			StartScreenAnim.SetBool("Start Appear", true);
 			StartScreenAnim.SetBool("Start Disappear", false);
+
+			
+
+			//rewardSystem.RewardPopup.SetBool("In", true);
+			//rewardSystem.RewardPopup.SetBool("Out", true);
+
 			dragPower.strokesContainer.SetActive(false);
 			parContainer.SetActive(false);
 			returnToMenu = false;
@@ -152,7 +156,6 @@ public class MenuController : MonoBehaviour
 			PlayMenu.SetActive(true);
 			SkinsMenu.SetActive(false);
 			ShopMenu.SetActive(false);
-			GiftsMenu.SetActive(false);
 		}
 
 		if (menu == "Settings Screen")
@@ -163,18 +166,6 @@ public class MenuController : MonoBehaviour
 			PlayMenu.SetActive(false);
 			SkinsMenu.SetActive(false);
 			ShopMenu.SetActive(false);
-			GiftsMenu.SetActive(false);
-		}
-
-		if (menu == "Shop Screen")
-		{
-			SplashScreen.SetActive(false);
-			StartScreen.SetActive(false);
-			SettingsMenu.SetActive(true);
-			PlayMenu.SetActive(false);
-			SkinsMenu.SetActive(false);
-			ShopMenu.SetActive(true);
-			GiftsMenu.SetActive(false);
 		}
 
 		if (menu == "Shop Screen")
@@ -185,7 +176,6 @@ public class MenuController : MonoBehaviour
 			PlayMenu.SetActive(false);
 			SkinsMenu.SetActive(false);
 			ShopMenu.SetActive(true);
-			GiftsMenu.SetActive(false);
 		}
 
 		if (menu == "Skins Screen")
@@ -196,19 +186,7 @@ public class MenuController : MonoBehaviour
 			PlayMenu.SetActive(false);
 			SkinsMenu.SetActive(true);
 			ShopMenu.SetActive(false);
-			GiftsMenu.SetActive(false);
-		}
-
-		if (menu == "Gifts Screen")
-		{
-			SplashScreen.SetActive(false);
-			StartScreen.SetActive(false);
-			SettingsMenu.SetActive(false);
-			PlayMenu.SetActive(false);
-			SkinsMenu.SetActive(false);
-			ShopMenu.SetActive(false);
-			GiftsMenu.SetActive(true);
-		}
+		}	
 	}
 
 	#region Menu Buttons
@@ -270,18 +248,6 @@ public class MenuController : MonoBehaviour
 		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
 	}
 
-	public void Gifts()
-	{
-		startScreenAnimationTimer = true;
-
-		nextMenu = "Gifts Menu";
-
-		StartScreenAnim.SetBool("Start Appear", false);
-		StartScreenAnim.SetBool("Start Disappear", true);
-
-		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
-	}
-
 	#endregion
 
 	#region Close Menu Buttons
@@ -319,15 +285,6 @@ public class MenuController : MonoBehaviour
 		{
 			SkinsMenuAnimation.SetBool("Skins Appear", false);
 			SkinsMenuAnimation.SetBool("Skins Disappear", true);
-			returnToMenu = true;
-
-			audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
-		}
-
-		if (menu == "Gifts Screen")
-		{
-			GiftsMenuAnimation.SetBool("Gifts Appear", false);
-			GiftsMenuAnimation.SetBool("Gifts Disappear", true);
 			returnToMenu = true;
 
 			audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
