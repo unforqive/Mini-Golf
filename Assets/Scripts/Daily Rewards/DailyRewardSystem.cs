@@ -26,6 +26,11 @@ namespace DailyRewardSystem
         [SerializeField] TMP_Text gemsText;
 
         [Space]
+        [Header("Leaderboard UI")]
+        [SerializeField] TMP_Text coinsText2;
+        [SerializeField] TMP_Text gemsText2;
+
+        [Space]
         [Header("Reward UI")]
         [SerializeField] GameObject rewardsObject;
 
@@ -185,8 +190,8 @@ namespace DailyRewardSystem
 
             nextRewardIndex = PlayerPrefs.GetInt("Next_Reward_Index", 0);
 
-            UpdateCoinsTextUI();
-            UpdateGemsTextUI();
+            Game.Instance.UpdateAllCoinsUIText();
+            Game.Instance.UpdateAllGemsUIText();
 
             //Add Click Events
             claimButton.onClick.RemoveAllListeners();
@@ -325,17 +330,14 @@ namespace DailyRewardSystem
                 Debug.Log("<color=yellow>" + reward.Type.ToString() + "Claimed : </color>+" + reward.Amount);
                 CurrencyData.Coins += reward.Amount;
 
-                //TODO
-                UpdateCoinsTextUI();
+                Game.Instance.UpdateAllCoinsUIText();
             } 
             else if (reward.Type == RewardType.Gems)
             {
                 type = "Gems";
                 Debug.Log("<color=purple>" + reward.Type.ToString() + "Claimed : </color>+" + reward.Amount);
                 CurrencyData.Gems += reward.Amount;
-
-                //TODO
-                UpdateGemsTextUI();
+                Game.Instance.UpdateAllGemsUIText();
 
                 isRewardReady = false;
             }
@@ -359,17 +361,6 @@ namespace DailyRewardSystem
 
             RewardNoti.SetBool("In", true);
             RewardNoti.SetBool("Out", false);
-        }
-
-        //Update UI (coins, gems)
-        void UpdateCoinsTextUI()
-        {
-            coinsText.text = CurrencyData.Coins.ToString();
-        }
-
-        void UpdateGemsTextUI()
-        {
-            gemsText.text = CurrencyData.Gems.ToString();
         }
 
         public void CloseButton()
