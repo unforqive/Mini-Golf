@@ -267,11 +267,12 @@ namespace DailyRewardSystem
                     gemsSmall.SetActive(false);
                     gemsLarge.SetActive(false);
                 }
-     
+
+                rewardAmountText.text = reward.Amount.ToString("#,##0") + " coins";
             }
             else if (reward.Type == RewardType.Gems)
             {
-                if (reward.Amount == 2)
+                if (reward.Amount == 10)
                 {
                     coinsSmall.SetActive(false);
                     coinsMedium.SetActive(false);
@@ -281,7 +282,7 @@ namespace DailyRewardSystem
                     gemsLarge.SetActive(false);
                 }
 
-                if (reward.Amount == 5)
+                if (reward.Amount == 25)
                 {
                     coinsSmall.SetActive(false);
                     coinsMedium.SetActive(false);
@@ -290,9 +291,11 @@ namespace DailyRewardSystem
                     gemsSmall.SetActive(false);
                     gemsLarge.SetActive(true);
                 }
+
+                rewardAmountText.text = reward.Amount.ToString("#,##0") + " gems";
             }
 
-            rewardAmountText.text = reward.Amount + " " + type;
+           
 
             if (consecutiveDays == 5)
             {

@@ -30,8 +30,11 @@ public class Shop : MonoBehaviour
     {
         public Sprite QualityImage;
         public Sprite QualityPlace;
+        public string ItemType;
+        public string ItemName;
         public Sprite ItemImage;
         public Sprite currency;
+        public Color itemColor;
         public int Price;
         public bool IsPurchased = false;
     }
@@ -42,10 +45,11 @@ public class Shop : MonoBehaviour
     [SerializeField] GameObject ItemTemplate;
     GameObject g;
     [SerializeField] Transform ShopScrollView;
-    Button BuyButton;
+    Button PreviewButton;
 
     [Space]
     [Header("Preview UI")]
+    [SerializeField] GameObject PreviewHolder;
     [SerializeField] GameObject PreviewItemQuality;
     [SerializeField] TMP_Text PreviewItemName;
 
@@ -69,16 +73,37 @@ public class Shop : MonoBehaviour
             g.transform.GetChild(1).GetChild(0).GetComponent<Image>().sprite = ShopItemsList[i].currency;
             g.transform.GetChild(2).GetComponent<Image>().sprite = ShopItemsList[i].ItemImage;
             g.transform.GetChild(3).GetComponent<TMPro.TMP_Text>().text = ShopItemsList[i].Price.ToString("#,##0");
-            BuyButton = g.transform.GetComponent<Button>();
+            g.transform.GetChild(6).GetComponent<Image>().color = ShopItemsList[i].itemColor;
+
+            PreviewButton = g.transform.GetComponent<Button>();
 
             if (ShopItemsList[i].IsPurchased)
             {
                 DisableBuy();
             }
-            BuyButton.AddEventListener(i, OnShopItemButtonClicked);
+            PreviewButton.AddEventListener(i, PreviewShopItem);
         }
 
         Destroy(ItemTemplate);
+    }
+
+    void PreviewShopItem(int itemIndex)
+    {
+        PreviewHolder.SetActive(true);
+
+        PreviewItemName.text = ShopItemsList[itemIndex].ItemName.ToString();
+        PreviewItemType.text = ShopItemsList[itemIndex].ItemType.ToString();
+
+        PreviewItem.GetComponent<Image>().sprite = ShopItemsList[itemIndex].ItemImage;
+        PreviewItemName.color = ShopItemsList[itemIndex].itemColor;
+
+        PreviewItemQuality.GetComponent<Image>().sprite = ShopItemsList[itemIndex].QualityImage;
+        PreviewValueCoins.transform.GetChild(0).GetComponent<TMP_Text>().text = ShopItemsList[itemIndex].Price.ToString("#,##0");
+    } 
+
+    public void ClosePreivew(int itemIndex)
+    {
+        PreviewHolder.SetActive(false);
     }
 
     void OnShopItemButtonClicked(int itemIndex)
@@ -91,7 +116,7 @@ public class Shop : MonoBehaviour
             ShopItemsList[itemIndex].IsPurchased = true;
 
             //Disable button
-            BuyButton = ShopScrollView.GetChild(itemIndex).GetComponent<Button>();
+            PreviewButton = ShopScrollView.GetChild(itemIndex).GetComponent<Button>();
             DisableBuy();
 
             //Change UI text: coins
@@ -110,7 +135,7 @@ public class Shop : MonoBehaviour
             ShopItemsList[itemIndex].IsPurchased = true;
 
             //Disable button
-            BuyButton = ShopScrollView.GetChild(itemIndex).GetComponent<Button>();
+            PreviewButton = ShopScrollView.GetChild(itemIndex).GetComponent<Button>();
             DisableBuy();
 
             //Change UI text: gems
@@ -124,7 +149,7 @@ public class Shop : MonoBehaviour
 
     void DisableBuy()
     {
-        BuyButton.interactable = false;
-        BuyButton.transform.GetChild(4).gameObject.SetActive(true);
+        PreviewButton.interactable = false;
+        PreviewButton.transform.GetChild(4).gameObject.SetActive(true);
     }
 }

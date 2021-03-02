@@ -64,6 +64,7 @@ public class Game : MonoBehaviour
 	}
 
 	//Handles all coins and gem text updates !!!!!IMPORTANT!!!!!\\
+	//!Remember to call the corresponding method when adding/subtracting values from player's currency!\\
 
 	public void UpdateAllCoinsUIText()
 	{

@@ -14,9 +14,7 @@ public class MenuController : MonoBehaviour
 	public GameObject SplashScreen;
 	public static string menu;
 	public static string nextMenu;
-
 	public GameObject DailyReward;
-
 	public DailyRewardSystem.DailyRewardSystem rewardSystem;
 
 	[Header("Menu Animators")]
@@ -26,6 +24,7 @@ public class MenuController : MonoBehaviour
 	public Animator PlayMenuAnimation;
 	public Animator SkinsMenuAnimation;
 	public Animator ShopMenuAnimation;
+	public Animator RewardNoti;
 
 	[Header("Public Variables")]
 	public bool returnToMenu;
@@ -137,11 +136,8 @@ public class MenuController : MonoBehaviour
 
 			StartScreenAnim.SetBool("Start Appear", true);
 			StartScreenAnim.SetBool("Start Disappear", false);
-
-			
-
-			//rewardSystem.RewardPopup.SetBool("In", true);
-			//rewardSystem.RewardPopup.SetBool("Out", true);
+			RewardNoti.SetBool("In", true);
+			RewardNoti.SetBool("Out", false);
 
 			dragPower.strokesContainer.SetActive(false);
 			parContainer.SetActive(false);
@@ -208,6 +204,8 @@ public class MenuController : MonoBehaviour
 
 		StartScreenAnim.SetBool("Start Appear", false);
 		StartScreenAnim.SetBool("Start Disappear", true);
+		RewardNoti.SetBool("In", false);
+		RewardNoti.SetBool("Out", true);
 
 		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
 	}
@@ -220,6 +218,8 @@ public class MenuController : MonoBehaviour
 
 		StartScreenAnim.SetBool("Start Appear", false);
 		StartScreenAnim.SetBool("Start Disappear", true);
+		RewardNoti.SetBool("In", false);
+		RewardNoti.SetBool("Out", true);
 
 		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
 	}
@@ -232,6 +232,8 @@ public class MenuController : MonoBehaviour
 
 		StartScreenAnim.SetBool("Start Appear", false);
 		StartScreenAnim.SetBool("Start Disappear", true);
+		RewardNoti.SetBool("In", false);
+		RewardNoti.SetBool("Out", true);
 
 		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
 	}
@@ -244,6 +246,8 @@ public class MenuController : MonoBehaviour
 
 		StartScreenAnim.SetBool("Start Appear", false);
 		StartScreenAnim.SetBool("Start Disappear", true);
+		RewardNoti.SetBool("In", false);
+		RewardNoti.SetBool("Out", true);
 
 		audioHandler.sfx.PlayOneShot(audioHandler.longSwooshSFX);
 	}
@@ -303,6 +307,8 @@ public class MenuController : MonoBehaviour
 
 		StartScreenAnim.SetBool("Start Appear", true);
 		StartScreenAnim.SetBool("Start Disappear", false);
+		RewardNoti.SetBool("In", true);
+		RewardNoti.SetBool("Out", false);
 
 		audioHandler.sfx.PlayOneShot(audioHandler.swooshSFX);
 	}
