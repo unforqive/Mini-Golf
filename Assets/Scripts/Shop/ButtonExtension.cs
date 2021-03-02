@@ -10,4 +10,18 @@ public static class ButtonExtension
 			OnClick(param);
 		});
 	}
+
+	public static void AddEventListener1<T>(this Button button, T param, Action<T> OnClick)
+	{
+		button.onClick.AddListener(delegate () {
+			OnClick(param);
+		});
+	}
+
+	public static void AddEventListener2<T>(this Button button, T param, Action<T> OnClick)
+	{
+		button.onClick.AddListener(delegate () {
+			OnClick(param);
+		});
+	}
 }
