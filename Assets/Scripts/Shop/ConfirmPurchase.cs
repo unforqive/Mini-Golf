@@ -7,7 +7,7 @@ using UnityEngine;
 public class ConfirmPurchase : MonoBehaviour
 {
     [Header("Confirm UI")]
-    [SerializeField] GameObject ConfirmHolder;
+    public GameObject ConfirmHolder;
     [SerializeField] GameObject CoinConfirm;
     [SerializeField] GameObject GemConfirm;
     [SerializeField] GameObject Background;
@@ -61,7 +61,6 @@ public class ConfirmPurchase : MonoBehaviour
         shop.InvalidCoins.SetActive(false);
         shop.InvalidGems.SetActive(false);
         shop.PurchaseSuccessful.SetActive(false);
-        shop.AlreadyBought.SetActive(false);
 
         ConfirmAnimation.SetBool("Out", false);
         ConfirmAnimation.SetBool("In", true);

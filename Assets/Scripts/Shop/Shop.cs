@@ -72,10 +72,18 @@ public class Shop : MonoBehaviour
     [SerializeField] TMP_Text ConfirmValue;
     [SerializeField] TMP_Text ConfirmGemValue;
 
+    [SerializeField] TMP_Text ConfirmItemName;
+    [SerializeField] GameObject ConfirmItemQuality;
+    [SerializeField] GameObject ConfirmItemImage;
+
+
+    [SerializeField] Animator ConfirmationAnimation;
+    [SerializeField] Animator InvalidCoinAnimation;
+    [SerializeField] Animator InvalidGemAnimation;
+
     public GameObject InvalidCoins;
     public GameObject InvalidGems;
     public GameObject PurchaseSuccessful;
-    public GameObject AlreadyBought;
 
     Button CoinConfirmButton;
     Button GemConfirmButton;
@@ -86,12 +94,14 @@ public class Shop : MonoBehaviour
 
     public int itemInt;
 
+    private bool startInTimer;
+    public int inTimer;
+
     void Start()
     {
         InvalidCoins.SetActive(false);
         InvalidGems.SetActive(false);
         PurchaseSuccessful.SetActive(false);
-        AlreadyBought.SetActive(false);
 
         PreviewValueGems.SetActive(false);
         showGemValue = false;
@@ -115,26 +125,59 @@ public class Shop : MonoBehaviour
             CoinConfirmButton = CoinConfirm.transform.GetComponent<Button>();
             GemConfirmButton = GemConfirm.transform.GetComponent<Button>();
 
-            if (ShopItemsList[i].IsPurchased)
+            if (ShopItemsList[i].IsPurchased && ShopItemsList[0].ItemName == "Ball Chest")
             {
+                if (ShopItemsList[0].ItemName == "Ball Chest")
+                {
+                    return;
+                }
+
                 DisableBuy();
             }
+
             PreviewButton.AddEventListener(i, PreviewShopItem);
         }
 
         Destroy(ItemTemplate);
     }
 
+    private void Update()
+    {
+        if (startInTimer)
+        {
+            inTimer += 1;
+        }
+
+        if (inTimer == 200)
+        {
+            ConfirmationAnimation.SetBool("In", true);
+            InvalidCoinAnimation.SetBool("In", true);
+            InvalidGemAnimation.SetBool("In", true);
+
+            ConfirmationAnimation.SetBool("Out", false);
+            InvalidCoinAnimation.SetBool("Out", false);
+            InvalidGemAnimation.SetBool("Out", false);
+
+            inTimer = 0;
+            startInTimer = false;
+        }
+    }
+
     void PreviewShopItem(int itemIndex)
     {
         PreviewHolder.SetActive(true);
 
-        confirmPurchase.ConfirmAnimation.SetBool("Out", false);
         confirmPurchase.ConfirmAnimation.SetBool("In", true);
 
         PreviewItemName.text = ShopItemsList[itemIndex].ItemName.ToString();
         PreviewItemType.text = ShopItemsList[itemIndex].ItemType.ToString();
-        
+
+        ConfirmItemName.text = ShopItemsList[itemIndex].ItemName.ToString();
+        ConfirmItemName.color = ShopItemsList[itemIndex].itemColor;
+        ConfirmItemQuality.GetComponent<Image>().sprite = ShopItemsList[itemIndex].QualityImage;
+
+        ConfirmItemImage.GetComponent<Image>().sprite = ShopItemsList[itemIndex].ItemImage;
+
         if (ShopItemsList[itemIndex].ItemName == "Ball Chest")
         {
             PreviewValueGems.SetActive(true);
@@ -170,11 +213,21 @@ public class Shop : MonoBehaviour
         {
             InvalidCoins.SetActive(false);
             InvalidGems.SetActive(false);
-            AlreadyBought.SetActive(false);
+
+            InvalidCoinAnimation.SetBool("In", true);
+            InvalidGemAnimation.SetBool("In", true);
+
+            InvalidCoinAnimation.SetBool("Out", false);
+            InvalidGemAnimation.SetBool("Out", false);
 
             if (!ShopItemsList[itemInt].IsPurchased)
             {
                 PurchaseSuccessful.SetActive(true);
+
+                ConfirmationAnimation.SetBool("Out", true);
+                ConfirmationAnimation.SetBool("In", false);
+
+                startInTimer = true;
             }
 
             Game.Instance.UseCoins(ShopItemsList[itemInt].Price);
@@ -189,15 +242,6 @@ public class Shop : MonoBehaviour
             //Change UI text: coins
             Game.Instance.UpdateAllCoinsUIText();
         }
-
-        if (ShopItemsList[itemInt].IsPurchased)
-        {
-            AlreadyBought.SetActive(true);
-            AlreadyBought.SetActive(true);
-            InvalidCoins.SetActive(false);
-            InvalidGems.SetActive(false);
-            PurchaseSuccessful.SetActive(false);
-        }
         else
         {
             Debug.Log("You don't have enough coins");
@@ -205,7 +249,11 @@ public class Shop : MonoBehaviour
             InvalidCoins.SetActive(true);
             InvalidGems.SetActive(false);
             PurchaseSuccessful.SetActive(false);
-            AlreadyBought.SetActive(false);
+
+            InvalidCoinAnimation.SetBool("Out", true);
+            InvalidCoinAnimation.SetBool("In", false);
+
+            startInTimer = true;
         }
     }
 
@@ -215,11 +263,21 @@ public class Shop : MonoBehaviour
         {
             InvalidCoins.SetActive(false);
             InvalidGems.SetActive(false);
-            AlreadyBought.SetActive(false);
+
+            InvalidCoinAnimation.SetBool("In", true);
+            InvalidGemAnimation.SetBool("In", true);
+
+            InvalidCoinAnimation.SetBool("Out", false);
+            InvalidGemAnimation.SetBool("Out", false);
 
             if (!ShopItemsList[itemInt].IsPurchased)
             {
                 PurchaseSuccessful.SetActive(true);
+
+                ConfirmationAnimation.SetBool("Out", true);
+                ConfirmationAnimation.SetBool("In", false);
+
+                startInTimer = true;
             }
 
             Game.Instance.UseGems(ShopItemsList[itemInt].GemValue);
@@ -234,14 +292,6 @@ public class Shop : MonoBehaviour
             //Change UI text: gems
             Game.Instance.UpdateAllGemsUIText();
         }
-
-        if(ShopItemsList[itemInt].IsPurchased)
-        {
-            AlreadyBought.SetActive(true);
-            InvalidCoins.SetActive(false);
-            InvalidGems.SetActive(false);
-            PurchaseSuccessful.SetActive(false);
-        }
         else
         {
             Debug.Log("You don't have enough gems");
@@ -249,7 +299,11 @@ public class Shop : MonoBehaviour
             InvalidCoins.SetActive(false);
             InvalidGems.SetActive(true);
             PurchaseSuccessful.SetActive(false);
-            AlreadyBought.SetActive(false);
+
+            InvalidGemAnimation.SetBool("Out", true);
+            InvalidGemAnimation.SetBool("In", false);
+
+            startInTimer = true;
         }
     }
 
@@ -269,5 +323,10 @@ public class Shop : MonoBehaviour
     {
         PreviewHolder.SetActive(true);
         ContentsHolder.SetActive(false);
+    }
+
+    public void CloseConfirmation()
+    {
+        confirmPurchase.ConfirmHolder.SetActive(false);
     }
 }
